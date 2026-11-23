@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>생각하는 힘을 키우는 서·논술형 평가</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* 크림 바탕 · 굵은 검정 테두리 · 단단한 그림자 · 사례별 파스텔 색 */
+  --cream:#fffaf0;
+  --ink:#151515;
+  --muted:#55595f;
+  --y:#ffd84a;
+  --y-t:#fff6cf;
+  --coral:#ff6b4a;
+  --c:#ffe27a;
+  --body:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --display:"Noto Sans KR","Apple SD Gothic Neo",sans-serif;
+  --u:min(1vw,1.7vh);
+  --r:calc(var(--u)*1.1);
+  --bd:max(2px,calc(var(--u)*.2)) solid var(--ink);
+  --sh:max(3px,calc(var(--u)*.35)) max(3px,calc(var(--u)*.35)) 0 var(--ink);
+  --gap:calc(var(--u)*1.4);
+  --pad:calc(var(--u)*1.6);
+  color-scheme:light;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--cream);color:var(--ink);font-family:var(--body);word-break:keep-all;overflow:hidden;-webkit-font-smoothing:antialiased;font-variant-numeric:lining-nums tabular-nums}
+button,select,input{font:inherit;color:inherit}
+button{background:none;border:0;cursor:pointer}
+:focus-visible{outline:3px solid var(--coral);outline-offset:3px;border-radius:8px}
+img{max-width:100%;display:block}
+.num{font-weight:900;font-variant-numeric:lining-nums tabular-nums;letter-spacing:-.02em}
+
+.app{height:100%;display:grid;grid-template-rows:auto auto 1fr;gap:calc(var(--u)*1);padding:calc(var(--u)*1.4) calc(var(--u)*1.8)}
+
+/* ── 상단 노란 블록 ── */
+.top{background:var(--y);border:var(--bd);box-shadow:var(--sh);border-radius:calc(var(--r)*1.3);display:flex;align-items:center;gap:calc(var(--u)*1);padding:calc(var(--u)*1) calc(var(--u)*1.8)}
+.logo{display:flex;flex-direction:column;gap:.15em;cursor:pointer;min-width:0;margin-right:auto}
+.logo b{font-size:calc(var(--u)*2.1);font-weight:900;letter-spacing:-.03em;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.logo span{font-size:calc(var(--u)*1);font-weight:500;white-space:nowrap}
+.menu{display:flex;gap:calc(var(--u)*.6)}
+.hb{font-size:calc(var(--u)*1.05);font-weight:800;padding:calc(var(--u)*.5) calc(var(--u)*1.1);border-radius:999px;background:#fff;border:var(--bd);white-space:nowrap;display:inline-flex;align-items:center;gap:.4em;transition:transform .1s,box-shadow .1s}
+.hb:hover{transform:translate(-1px,-1px);box-shadow:2px 2px 0 var(--ink)}
+.menu .hb.on{background:var(--ink);color:#fff}
+.hb.play{background:var(--coral);color:#fff}
+.hb.play.on{background:var(--ink)}
+.hb .dot{width:.55em;height:.55em;border-radius:50%;background:#fff}
+.hb.play.on .dot{background:var(--y);animation:pulse 1.2s infinite}
+@keyframes pulse{50%{opacity:.3}}
+.prog{height:calc(var(--u)*.7);border:var(--bd);border-radius:999px;background:#fff;overflow:hidden;display:none}
+.prog.on{display:block}
+.prog i{display:block;height:100%;width:0;background:var(--y);border-right:var(--bd)}
+.app.noprog{grid-template-rows:auto 1fr}
+
+/* ── 설정 패널 ── */
+.set{position:fixed;top:calc(var(--u)*8.4);right:calc(var(--u)*2);width:min(92vw,calc(var(--u)*36));background:#fff;border:var(--bd);box-shadow:var(--sh);border-radius:var(--r);padding:calc(var(--u)*1.6);z-index:20;display:none;font-size:calc(var(--u)*1.1);max-height:calc(100vh - var(--u)*10);overflow-y:auto}
+.set.on{display:block}
+.set h3{font-size:1.3em;font-weight:900;display:flex;justify-content:space-between;align-items:center}
+.set h3 button{font-size:.75em;font-weight:800;border:var(--bd);border-radius:999px;padding:.15em .8em}
+.set h4{font-size:.85em;font-weight:900;margin:1.1em 0 .5em;display:inline-block;background:var(--y);border:var(--bd);border-radius:999px;padding:.05em .8em}
+.seg{display:grid;grid-template-columns:repeat(6,1fr);gap:.4em}
+.seg button,.opt{border:var(--bd);border-radius:.6em;padding:.45em .3em;font-weight:800;text-align:center;background:#fff}
+.seg button.on,.opt.on{background:var(--ink);color:#fff}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:.45em}
+.opt{display:flex;align-items:center;gap:.5em;text-align:left;padding:.5em .7em}
+.opt small{display:block;font-weight:500;font-size:.75em;opacity:.75}
+.opt.wide{grid-column:1/-1}
+.vol{display:flex;align-items:center;gap:.7em}
+.vol input{flex:1;accent-color:var(--coral)}
+.set .hint{font-size:.8em;color:var(--muted);margin-top:.9em;line-height:1.5}
+.set .go{margin-top:1em;width:100%;background:var(--coral);color:#fff;font-weight:900;border:var(--bd);box-shadow:var(--sh);border-radius:.7em;padding:.7em}
+
+.view{min-height:0;position:relative;overflow:visible}
+.page{position:absolute;inset:0;display:grid;grid-template-rows:auto auto minmax(0,1fr);gap:calc(var(--u)*1);min-height:0}
+
+/* ── 사례 머리: 파스텔 띠 ── */
+.who{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:calc(var(--u)*1.4);padding:calc(var(--u)*1.1) calc(var(--u)*1.6);background:var(--c);border:var(--bd);box-shadow:var(--sh);border-radius:var(--r)}
+.badge{width:calc(var(--u)*4.6);height:calc(var(--u)*4.6);border-radius:calc(var(--r)*.8);background:#fff;border:var(--bd);display:grid;place-items:center;font-size:calc(var(--u)*2)}
+.who .tx{min-width:0}
+.row{display:flex;align-items:center;gap:calc(var(--u)*.7);min-width:0}
+.pill{background:var(--ink);color:#fff;font-weight:900;font-size:calc(var(--u)*1);padding:.2em .85em;border-radius:999px;white-space:nowrap}
+.who .meta{font-size:calc(var(--u)*1.1);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.who h1{font-size:calc(var(--u)*2.3);font-weight:900;line-height:1.25;margin-top:calc(var(--u)*.3);letter-spacing:-.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.person{text-align:right;white-space:nowrap;background:#fff;border:var(--bd);border-radius:calc(var(--r)*.8);padding:calc(var(--u)*.5) calc(var(--u)*1.1)}
+.person b{display:block;font-size:calc(var(--u)*1.8);font-weight:900;line-height:1.2}
+.person span{font-size:calc(var(--u)*.95);color:var(--muted);font-weight:700}
+.tabs{display:flex;align-items:center;gap:calc(var(--u)*.6);flex-wrap:nowrap}
+.tab{font-size:calc(var(--u)*1.1);font-weight:800;padding:calc(var(--u)*.45) calc(var(--u)*1.2);border:var(--bd);border-radius:999px;background:#fff;white-space:nowrap;transition:transform .1s,box-shadow .1s}
+.tab:hover{transform:translate(-1px,-1px);box-shadow:2px 2px 0 var(--ink)}
+.tab.on{background:var(--ink);color:#fff}
+.tabs .sp{flex:1}
+.nx{font-size:calc(var(--u)*1.05);font-weight:800;border:var(--bd);border-radius:999px;padding:calc(var(--u)*.45) calc(var(--u)*1.1);white-space:nowrap;background:var(--c)}
+.nx:hover{box-shadow:2px 2px 0 var(--ink);transform:translate(-1px,-1px)}
+.body{min-height:0;padding:calc(var(--u)*1.8);overflow:hidden;background:#fff;border:var(--bd);box-shadow:var(--sh);border-radius:var(--r)}
+.fit{font-size:calc(var(--u)*1.5);height:100%}
+
+/* ── 공통 내용 블록 ── */
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:calc(var(--u)*2.2);height:100%;min-height:0}
+.col{display:flex;flex-direction:column;gap:.8em;min-height:0}
+.col .end{margin-top:auto}
+.stack{display:grid;grid-template-rows:auto minmax(0,1fr);gap:1em;height:100%;min-height:0}
+.cap{font-size:.7em;font-weight:900;width:fit-content;background:var(--c);border:var(--bd);border-radius:999px;padding:.1em .8em}
+.key{font-size:1.75em;font-weight:900;line-height:1.4;letter-spacing:-.03em;background:var(--y-t);border-left:.22em solid var(--y);padding:.45em .7em;border-radius:0 .4em .4em 0;text-wrap:balance}
+.pts{list-style:none;display:grid;gap:.5em;counter-reset:p}
+.pts li{display:grid;grid-template-columns:1.6em 1fr;gap:.6em;align-items:center;background:#fff;border:var(--bd);border-radius:.6em;padding:.55em .8em;font-weight:800;line-height:1.4;counter-increment:p}
+.pts li::before{content:counter(p);font-weight:900;font-size:.85em;color:#fff;background:var(--ink);border-radius:50%;width:1.75em;height:1.75em;display:grid;place-items:center}
+.std{font-size:.78em;color:var(--muted);line-height:1.5;font-weight:700;display:flex;gap:.5em;align-items:center}
+.std b{background:var(--ink);color:#fff;border-radius:999px;padding:.05em .7em;font-weight:900}
+
+.shot{background:#fff;border:var(--bd);box-shadow:var(--sh);border-radius:var(--r);display:grid;grid-template-rows:minmax(0,1fr) auto;min-height:0;height:100%;cursor:zoom-in;overflow:hidden;transition:transform .12s,box-shadow .12s}
+.shot:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
+.shot .im{min-height:0;display:flex;align-items:center;justify-content:center;padding:.4em;background:#fff}
+.shot img{width:100%;height:100%;object-fit:contain}
+.shot figcaption{font-size:.75em;font-weight:900;display:flex;justify-content:space-between;align-items:center;gap:.5em;padding:.45em .8em;background:var(--c);border-top:var(--bd)}
+.zoom{font-size:.85em;font-weight:800;background:#fff;border:var(--bd);border-radius:999px;padding:.05em .7em;white-space:nowrap}
+
+.flow{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:.8em}
+.st{background:#fff;border:var(--bd);border-radius:.7em;padding:.6em .75em;position:relative;display:flex;flex-direction:column;gap:.2em;min-height:5em}
+.st:not(:last-child)::after{content:"▶";position:absolute;right:-.78em;top:50%;transform:translateY(-50%);font-size:.6em;line-height:1;z-index:1}
+.st i{font-style:normal;font-size:1.1em;font-weight:900;line-height:1}
+.st b{font-size:.92em;line-height:1.3;font-weight:900}
+.st span{font-size:.7em;color:var(--muted);line-height:1.4;font-weight:700}
+.st.on{background:var(--c);box-shadow:3px 3px 0 var(--ink)}
+
+.rub{display:grid;gap:.5em;align-content:start}
+.rub .r{display:grid;grid-template-columns:minmax(0,1fr) 2.4em;gap:.3em .9em;align-items:center;background:#fff;border:var(--bd);border-radius:.6em;padding:.55em .9em}
+.rub .nm{font-weight:900;font-size:.92em;line-height:1.3}
+.rub .tr{grid-column:1;height:.75em;background:#fff;border:var(--bd);border-radius:99px;overflow:hidden}
+.rub .fl{height:100%;background:var(--c);border-right:var(--bd)}
+.rub .r.max{background:var(--y-t)}
+.rub .r.max .fl{background:var(--coral)}
+.rub .pt{grid-row:1/3;grid-column:2;font-size:1.6em;text-align:right}
+.rub.many .r{grid-template-columns:minmax(0,11em) minmax(0,1fr) 2.2em;padding:.45em .9em}
+.rub.many .tr{grid-column:2}
+.rub.many .pt{grid-row:auto;grid-column:3;font-size:1.4em}
+.rub .lv{display:flex;gap:.25em}
+.rub .lv span{flex:1;text-align:center;font-weight:900;font-size:.78em;padding:.05em 0;border-radius:.35em;border:var(--bd);background:#fff}
+.rub .lv span:first-child{background:var(--c)}
+.total{background:var(--y);border:var(--bd);box-shadow:var(--sh);border-radius:var(--r);padding:.9em 1.1em;display:grid;grid-template-columns:auto 1fr;align-items:end;gap:.2em 1em}
+.total .t{grid-column:1/-1;font-size:.75em;font-weight:900;width:fit-content;background:#fff;border:var(--bd);border-radius:999px;padding:.05em .8em}
+.total .v{font-size:3.8em;line-height:.95}
+.total .v small{font-size:.3em;margin-left:.15em}
+.total .s{font-size:.85em;font-weight:800;padding-bottom:.4em}
+.note{background:var(--y-t);border-left:.22em solid var(--y);border-radius:0 .5em .5em 0;padding:.75em 1em;font-size:.85em;line-height:1.6;font-weight:600}
+.note b{font-weight:900}
+
+.cards{display:grid;gap:.6em;align-content:start}
+.card{background:#fff;border:var(--bd);border-radius:.7em;padding:.7em .9em;display:grid;grid-template-columns:auto 1fr;gap:.15em .7em}
+.card .ic{grid-row:1/3;width:1.9em;height:1.9em;border-radius:50%;background:var(--c);border:var(--bd);display:grid;place-items:center;font-weight:900;font-size:.8em}
+.card b{font-size:1em;font-weight:900;line-height:1.35}
+.card p{font-size:.82em;color:#30343a;line-height:1.5;font-weight:600}
+.card.pr{background:#161616;color:#fff;border-color:var(--ink);grid-template-columns:1fr}
+.card.pr .ic{display:none}
+.card.pr b{color:#fff;font-size:.8em;display:flex;align-items:center;gap:.4em}
+.card.pr b::before{content:"💬"}
+.card.pr p{color:var(--y);font-weight:800;line-height:1.6}
+.copy{justify-self:start;margin-top:.35em;background:var(--y);color:var(--ink);font-weight:900;font-size:.72em;border:2px solid var(--y);border-radius:.5em;padding:.25em .9em}
+.copy.ok{background:#fff}
+
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--u)*2.2);height:100%;min-height:0}
+.vs .side{display:grid;grid-template-rows:auto auto minmax(0,1fr);gap:.6em;min-height:0}
+.tag{width:fit-content;font-weight:900;font-size:.82em;padding:.15em .9em;border-radius:999px;border:var(--bd);background:#fff}
+.tag.on{background:var(--c)}
+.vs p{font-weight:800;line-height:1.45}
+.vs p b{background:linear-gradient(transparent 55%,var(--y) 55%)}
+
+.gal{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:calc(var(--u)*1.6);height:100%;min-height:0;padding:0 .2em .3em 0}
+
+/* 홈 */
+.home{display:grid;grid-template-columns:27fr 73fr;gap:calc(var(--u)*1.4);position:absolute;inset:0}
+.hero{background:#f7f3ea;border:var(--bd);box-shadow:var(--sh);border-radius:var(--r);padding:calc(var(--u)*1.8);display:flex;flex-direction:column;min-height:0}
+.hero .kick{font-size:calc(var(--u)*.95);font-weight:900;width:fit-content;background:var(--y);border:var(--bd);border-radius:999px;padding:.15em .8em}
+.hero h1{font-size:calc(var(--u)*2.6);line-height:1.3;font-weight:900;margin-top:calc(var(--u)*1.2);letter-spacing:-.04em}
+.hero h1 em{font-style:normal;background:linear-gradient(transparent 58%,var(--y) 58%)}
+.hero p{font-size:calc(var(--u)*1.1);line-height:1.6;margin-top:calc(var(--u)*1.2);font-weight:600;color:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:calc(var(--u)*.5);margin-top:calc(var(--u)*1.6)}
+.legend span{font-size:calc(var(--u)*.9);font-weight:800;border:var(--bd);border-radius:999px;padding:.1em .7em}
+.hero .go{display:grid;gap:calc(var(--u)*.7)}
+.cover{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;cursor:zoom-in;margin-bottom:calc(var(--u)*1.4)}
+.cover img{max-height:100%;max-width:100%;object-fit:contain;border:var(--bd);border-radius:calc(var(--r)*.6);box-shadow:var(--sh);transition:transform .15s}
+.cover:hover img{transform:rotate(-1.5deg) scale(1.02)}
+.hero .go button{background:var(--coral);color:#fff;font-weight:900;font-size:calc(var(--u)*1.2);padding:calc(var(--u)*.8) calc(var(--u)*1.2);border-radius:var(--r);border:var(--bd);box-shadow:var(--sh);text-align:center;transition:transform .1s,box-shadow .1s}
+.hero .go button:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
+.hero .go button.ghost{background:#fff;color:var(--ink)}
+.tiles{background:#fff;border:var(--bd);box-shadow:var(--sh);border-radius:var(--r);padding:calc(var(--u)*2) calc(var(--u)*2);display:flex;flex-direction:column;justify-content:center;gap:calc(var(--u)*1.3);min-height:0}
+.tiles h2{font-size:calc(var(--u)*1.9);font-weight:900;letter-spacing:-.03em;display:flex;align-items:baseline;gap:.6em}
+.tiles h2 small{font-size:.55em;color:var(--muted);font-weight:700}
+.grid10{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-auto-rows:calc(var(--u)*16);gap:calc(var(--u)*1.1)}
+.tile{background:var(--c);border:var(--bd);border-radius:var(--r);padding:calc(var(--u)*1.1) calc(var(--u)*1.2);text-align:left;display:grid;grid-template-rows:auto 1fr auto;gap:calc(var(--u)*.6);transition:transform .12s,box-shadow .12s;min-height:0;overflow:hidden}
+.tile:hover{transform:translate(-3px,-3px);box-shadow:var(--sh)}
+.tile .top2{display:flex;justify-content:space-between;align-items:center}
+.tile .n{font-size:calc(var(--u)*1.9);line-height:1}
+.tile .sj{background:#fff;border:var(--bd);font-weight:900;font-size:calc(var(--u)*.9);padding:.05em .65em;border-radius:999px;white-space:nowrap}
+.tile .tp{font-size:calc(var(--u)*1.05);font-weight:800;line-height:1.45;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;align-self:start}
+.tile .foot{border-top:var(--bd);padding-top:calc(var(--u)*.6);display:grid;gap:calc(var(--u)*.15)}
+.tile .nm{font-size:calc(var(--u)*1.8);font-weight:900;line-height:1.2;letter-spacing:-.02em}
+.tile .sc{font-size:calc(var(--u)*.92);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.src{font-size:calc(var(--u)*.85);color:var(--muted);font-weight:600}
+
+/* Ⅰ장 · 원칙 */
+.ladder{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.6em;align-items:end;min-height:0}
+.ladder div{background:#fff;border:var(--bd);border-radius:.7em .7em 0 0;padding:.65em .7em;display:flex;flex-direction:column;gap:.3em}
+.ladder b{font-size:1.2em;font-weight:900}
+.ladder span{font-size:.72em;line-height:1.45;font-weight:700}
+.ladder .hi{background:var(--c)}
+.formula{display:flex;align-items:center;gap:.5em;flex-wrap:wrap;font-weight:900;font-size:1.3em}
+.formula span{background:#fff;border:var(--bd);border-radius:.6em;padding:.3em .75em;box-shadow:3px 3px 0 var(--ink)}
+.formula span.on{background:var(--coral);color:#fff}
+.formula em{font-style:normal}
+.gb{display:grid;grid-template-columns:5.5em 1fr 1.3fr;background:#fff;border:var(--bd);border-radius:.7em;overflow:hidden}
+.gb div{padding:.55em .8em;border-bottom:var(--bd);font-size:.85em;line-height:1.45;font-weight:600}
+.gb div:nth-last-child(-n+3){border-bottom:0}
+.gb .h{font-weight:900;background:#f3f3f3}
+.gb .h.b{background:var(--y)}
+.gb .k{font-weight:900}
+.gb .bt{font-weight:800;background:var(--y-t)}
+.prin{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:1fr 1fr;gap:calc(var(--u)*1.2);height:100%}
+.prin .c{background:var(--pc);border:var(--bd);border-radius:var(--r);padding:.9em 1em;display:flex;flex-direction:column;gap:.4em}
+.prin .c i{font-style:normal;font-size:1.5em;line-height:1}
+.prin .c b{font-size:1.15em;line-height:1.35;font-weight:900}
+.prin .c p{font-size:.85em;line-height:1.5;font-weight:600}
+.prin .c small{margin-top:auto;font-size:.72em;font-weight:900;width:fit-content;background:#fff;border:var(--bd);border-radius:999px;padding:.05em .7em}
+
+.lb{position:fixed;inset:0;background:rgba(20,20,20,.88);display:none;align-items:center;justify-content:center;flex-direction:column;gap:1em;z-index:30;padding:3vh 3vw;cursor:zoom-out}
+.lb.on{display:flex}
+.lb img{max-width:100%;max-height:86vh;background:#fff;border:3px solid var(--ink);border-radius:10px;box-shadow:8px 8px 0 var(--y)}
+.lb p{color:#fff;font-size:calc(var(--u)*1.4);font-weight:800}
+.lb p span{color:var(--y);margin-left:.8em;font-size:.8em}
+
+@media (max-width:820px){
+  body{overflow:auto}
+  :root{--u:2.4vw}
+  .app{height:auto}
+  .home,.page{position:static}
+  .home{grid-template-columns:1fr}
+  .grid10{grid-template-columns:1fr 1fr;grid-auto-rows:auto}
+  .split,.vs{grid-template-columns:1fr}
+  .shot{height:60vh}
+  .flow{grid-auto-flow:row}
+  .st::after{display:none}
+  .menu,.logo span{display:none}
+  .view,.body{overflow:visible}
+  .gal{grid-auto-flow:row}
+  .ladder{grid-template-columns:1fr 1fr}
+  .prin{grid-template-columns:1fr 1fr;grid-template-rows:none}
+  .who{grid-template-columns:auto 1fr}
+  .person{display:none}
+  .tabs{overflow-x:auto}
+}
+
+.prin .c{text-align:left;cursor:pointer;transition:transform .12s,box-shadow .12s}
+.prin .c:hover{transform:translate(-3px,-3px);box-shadow:var(--sh)}
+.prin .c .more{margin-top:auto;display:grid;justify-items:start;gap:.45em}
+.prin .c .more small{margin-top:0;border-radius:.5em}
+.prin .c .more em{font-style:normal;font-size:.72em;font-weight:900;background:var(--ink);color:#fff;border-radius:999px;padding:.15em .75em;white-space:nowrap}
+.lbx{position:absolute;top:2vh;right:2vw;width:calc(var(--u)*4);height:calc(var(--u)*4);border-radius:50%;background:var(--y);border:3px solid var(--ink);font-size:calc(var(--u)*1.8);font-weight:900;color:var(--ink)}
+.pm{position:fixed;inset:0;background:rgba(20,20,20,.55);display:none;align-items:center;justify-content:center;z-index:25;padding:3vh 3vw}
+.pm.on{display:flex}
+.pmc{width:min(94vw,calc(var(--u)*92));max-height:90vh;display:grid;grid-template-rows:auto minmax(0,1fr) auto;background:#fff;border:var(--bd);box-shadow:8px 8px 0 var(--ink);border-radius:calc(var(--r)*1.2);overflow:hidden;font-size:calc(var(--u)*1.45)}
+.pmh{display:grid;grid-template-columns:auto 1fr auto;gap:.8em;align-items:center;background:var(--pc);border-bottom:var(--bd);padding:.8em 1.1em}
+.pmn{width:2.6em;height:2.6em;border-radius:.6em;background:#fff;border:var(--bd);display:grid;place-items:center;font-size:1.2em}
+.pmh small{font-size:.65em;font-weight:900;background:#fff;border:var(--bd);border-radius:999px;padding:.05em .7em}
+.pmh h2{font-size:1.65em;font-weight:900;letter-spacing:-.03em;margin-top:.2em}
+.pmx{width:2.2em;height:2.2em;border-radius:50%;background:#fff;border:var(--bd);font-weight:900;font-size:1em}
+.pmb{padding:1.1em 1.3em;overflow-y:auto}
+.pmd{font-size:1.1em;font-weight:700;line-height:1.65;background:var(--y-t);border-left:.25em solid var(--y);padding:.7em .9em;border-radius:0 .5em .5em 0}
+.pmb h4{font-size:.75em;font-weight:900;width:fit-content;background:var(--ink);color:#fff;border-radius:999px;padding:.1em .9em;margin:1.1em 0 .6em}
+.pmex{display:grid;grid-template-columns:1fr 1fr;gap:.7em}
+.ex{border:var(--bd);border-radius:.7em;padding:.7em .85em;display:grid;gap:.4em;align-content:start;background:#fff}
+.who2{width:fit-content;font-size:.72em;font-weight:900;background:var(--pc);border:var(--bd);border-radius:999px;padding:.05em .7em}
+.ex p{font-size:.85em;font-weight:600;line-height:1.55}
+.ex button{justify-self:start;font-size:.7em;font-weight:900;border:var(--bd);border-radius:999px;padding:.15em .8em;background:#fff}
+.ex button:hover{background:var(--y)}
+.pmf{display:grid;grid-template-columns:1fr 1fr;gap:.7em;padding:.8em 1.1em;border-top:var(--bd)}
+.pmf button{font-weight:900;font-size:.85em;border:var(--bd);border-radius:.6em;padding:.5em;background:#fff}
+.pmf button:hover{background:var(--y)}
+@media (max-width:820px){.pmex{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="app noprog" id="app">
+  <header class="top">
+    <div class="logo" id="logo" role="button" tabindex="0"><b>AI 시대, 생각하는 힘을 키우는 서·논술형 평가</b><span>수석교사 10인의 현장 실천을 한곳에 담았어요</span></div>
+    <nav class="menu" aria-label="주요 메뉴">
+      <button class="hb" type="button" data-go="home">10인 사례</button>
+      <button class="hb" type="button" data-go="intro">서·논술형평가 이해</button>
+      <button class="hb" type="button" data-go="principles">공통 원칙</button>
+    </nav>
+    <button class="hb line" id="setBtn" type="button" aria-expanded="false">⚙ 부스 설정</button>
+    <button class="hb play" id="auto" type="button" aria-pressed="false"><span class="dot"></span><span id="autoTx">자동 넘김</span></button>
+  </header>
+  <div class="prog" id="progW"><i id="prog"></i></div>
+  <main class="view" id="view"></main>
+</div>
+
+<div class="set" id="set" role="dialog" aria-label="부스 설정">
+  <h3>부스 설정 <button type="button" id="setClose" aria-label="닫기">닫기 ✕</button></h3>
+  <h4>자동 넘김 간격</h4>
+  <div class="seg" id="seg"></div>
+  <h4>배경 음악</h4>
+  <div class="opts" id="opts"></div>
+  <input type="file" id="file" accept="audio/*" hidden>
+  <h4>음량</h4>
+  <div class="vol"><span>🔈</span><input type="range" id="vol" min="0" max="100" value="40" aria-label="음량"><span id="volTx" class="num">40</span></div>
+  <button type="button" class="go" id="startAll">▶ 음악과 함께 자동 넘김 시작</button>
+  <p class="hint">관람객이 화면을 누르면 자동 넘김이 멈춥니다. 음악은 계속 흐르며, 여기서 ‘없음’을 고르면 꺼집니다. 내 음악 파일은 이 기기에서만 재생됩니다.</p>
+</div>
+<div class="lb" id="lb" role="dialog" aria-label="이미지 확대"><button type="button" class="lbx" aria-label="닫기">✕</button><img id="lbimg" alt=""><p id="lbcap"></p></div>
+<div class="pm" id="pm"><div class="pmc" id="pmc" role="dialog" aria-modal="true" aria-label="원칙 자세히 보기"></div></div>
+
+<script>
+const T=[
+{id:"lee-yo",no:"01",subj:"도덕",school:"충의중학교",name:"이영옥",grade:"중1",
+ title:"서·논술형 평가와 AI 피드백",sub:"가상 공간과 디지털 시민 윤리",std:"[9도02-03] 가상공간의 도덕 문제와 해결 방안",
+ key:"문제 행동 → 영향 → 도덕적 원칙 → 실천 방안",
+ pts:["일상 속 디지털 발자국 사례로 지문 구성","행동을 ‘도덕적 원칙’과 연결했는지가 채점의 핵심","문항 초안을 AI에게 검토받아 정교화"],
+ flow:[["가상공간 체험","특징 파악하기"],["질문 탐구","가상 공간은 지니인가?"],["도덕 문제 조사","문제 파악하기"],["디지털 발자국","나를 점검·성찰"],["도덕적 원칙","디지털 시민의 원칙 세우기"],["논술형 평가","서로 존중하는 디지털 시민",1]],
+ rubric:{total:20,items:[["가상공간의 특성",3],["게시 전 도덕적 행동",2],["비도덕적 행동과 영향",4],["실천 행동과 원칙",2],["개인정보 피해",3],["입력 전 실천과 원칙",2],["올바른 이용 실천 방안",4]],note:"<b>기본점수 7점</b> · 행동을 도덕적 원칙과 <b>연결</b>했는지로 수준을 가릅니다."},
+ ai:[["문항 초안 → AI 검토","성취기준과 교사의 의도에 맞는지 확인"],["중복 요소 점검","문항끼리 겹치는 요구를 찾아 정리"],["학생 눈높이로 다듬기","학생 입장에서 문항 표현을 정교화"]],
+ img:{main:["0017","서·논술형 평가 문항"],flow:["001D","학생 답안"],ai:["0018","문항 구성에 대한 AI 피드백"],gal:[["0017","평가 문항"],["0018","AI 피드백 표"],["001D","학생 답안"]]}},
+{id:"kim-mk",no:"02",subj:"국어",school:"화접중학교",name:"김미경",grade:"중2",
+ title:"설명하는 글쓰기 평가 설계",sub:"진로·관심 분야에서 대상을 정해 설명하는 글쓰기",std:"[9국03-01] 대상에 적합한 설명 방법으로 글쓰기",
+ key:"내가 고른 대상을, 알맞은 설명 방법으로",
+ pts:["6문단 이상 · 1,500자 이상 설명문","원형정리법 비계로 개요 작성 지원","AI 코스웨어 키위런으로 개인별 고쳐쓰기"],
+ flow:[["과제 이해","교과서 설명문 분석"],["대상 정하기","원형정리법으로 발상"],["자료 수집","복수의 자료 활용"],["개요 작성","과정평가 학습지"],["설명문 쓰기","수행평가",1],["AI 고쳐쓰기","키위런 피드백",1],["동료 평가","최종 제출"]],
+ rubric:{total:13,items:[["주제",2],["제목",2],["구성 (6문단)",2],["들여쓰기",2],["어법",1],["설명 방법",2],["분량 (1,500자)",2]],note:"<b>7요소 13점</b> · 어법 1점, 나머지 각 2점으로 단순하고 분명하게"},
+ ai:[["키위런 실시간 피드백","학생 글 내용에 맞춘 개인별 고쳐쓰기 안내"],["AI 다음엔 사람","AI 피드백 → 동료 평가 → 최종 제출"]],
+ img:{main:["0024","학생이 쓴 설명문"],flow:["0020","과정평가 학습지"],ai:["0024","고쳐 쓴 학생 글"],gal:[["0020","과정평가 학습지"],["0024","학생 설명문"]]}},
+{id:"ko-yk",no:"03",subj:"사회",school:"훈민중학교",name:"고윤경",grade:"중1",
+ title:"생활 속 문제와 AI를 활용한 문항 개발",sub:"정치과정 논술",std:"[9사(일사)04-02] 정치 주체의 역할과 정치과정의 의미",
+ key:"우리 동네 문제가 정책이 되기까지: 요구 → 결정 → 집행",
+ pts:["학생이 ‘민주주의 가이드’가 되는 GRASPS 과제","문항마다 논술 동사의 뜻을 함께 제시","형성평가 · 토론 · 총괄평가로 성장 추적"],
+ flow:[["단원 재구성","3단원 · 핵심 질문 1개 · 17차시"],["10차시","민주주의 논술형 형성평가"],["11~12차시","사회 갈등과 차별 찬반토론"],["17차시","정치과정 논술형 총괄평가",1],["AI 채점","하이러닝 초안 → 교사 확정",1]],
+ rubric:{level:1,items:[["정치의 의미와 5단계"],["정치 주체 역할 비교"],["실제 문제에 정치과정 적용"],["민주적 해결 방안 창안"]],note:"문항 4개가 <b>기초 이해 → 분석 → 적용 → 평가·창안</b>으로 이어지고, 앞 답이 다음 문항의 재료가 됩니다."},
+ ai:[["노트북LM 인포그래픽","‘민주주의 = 스마트폰 OS’ 비유로 도입"],["제미나이로 탐색 단축","아낀 시간을 토론과 성찰 글쓰기에"],["하이러닝 AI 채점","요소별 점수·피드백 초안 → 교사 검토·확정"]],
+ img:{main:["0029","GRASPS 평가 과제"],flow:["0028","찬반토론 학생 활동지"],ai:["0025","노트북LM으로 만든 인포그래픽"],gal:[["0025","민주주의라는 시스템"],["0026","AI 채점 화면"],["0038","학생 답안"]]}},
+{id:"park-my",no:"04",subj:"역사",school:"다산새봄중학교",name:"박미영",grade:"중2",
+ title:"AI 피드백을 활용한 서·논술형 평가",sub:"신항로 개척 평가하기",std:"[9역04-03] 오스만 제국의 성장과 유럽 사회의 변화",
+ key:"같은 사건, 다른 관점. 자료로 논증하기",
+ pts:["원주민 · 끌려간 아프리카인 · 에스파냐 상인 · 중국 농민 중 한 명의 입장","조건 5개 = 평가요소 5개 = 답안 5문단","AI 피드백 전에 예시글을 먼저 채점"],
+ flow:[["교류의 정의","우리 반이 직접 만들기"],["관점 비교","정복당한 쪽 vs 이익 본 쪽"],["네 대륙 자료","에스파냐 상인 일지"],["초고 쓰기","논증하는 글"],["AI 피드백","고쳐 쓸 방향 정하기",1],["총괄평가","한 인물의 입장에서 논증",1]],
+ rubric:{total:20,items:[["역사적 관점 유지",2],["주장 밝히기",2],["상대편 주장과 이유",6],["자료로 반박하기",6],["주장 강화 · 오늘날 연결",4]],note:"배점이 큰 두 요소(<b>상대편 주장 · 자료로 반박</b>)만 골라 예시글 채점 연습"},
+ ai:[["점수는 숨기고","AI가 약한 곳만 짚도록 조건 설정"],["한 문장 옮겨 적기","가장 와닿은 피드백으로 고칠 점 정리"],["동의하지 않으면 근거와 함께","AI 피드백도 비판적으로 읽기"]],
+ img:{main:["003D","평가 문항과 자료"],flow:["003A","초고 개요 활동지"],ai:["003C","AI 피드백"],gal:[["003A","개요 활동지"],["003C","AI 피드백"],["003F","최종 답안"]]}},
+{id:"jin-yj",no:"05",subj:"과학",school:"율정중학교",name:"진연자",grade:"중3",
+ title:"과학기사와 AI를 활용한 문항 개발",sub:"체세포 분열 논술 · AI 플랫폼 채점의 실제",std:"[9과21-02] 염색체 행동 중심으로 체세포분열 해석",
+ key:"체세포 분열로 읽는 도마뱀과 아홀로틀의 재생",
+ pts:["AI로 중3 눈높이 과학 기사를 찾아 지문 제작","<조건>이 있을 때와 없을 때 답이 달라진다","AI 교수·학습 플랫폼으로 채점·피드백"],
+ flow:[["현미경 관찰","체세포 분열 관찰"],["AI 기사 탐색","흥미로운 과학 기사 추천"],["지문 재구성","기사 2편을 중3 수준으로"],["1번","재생을 체세포 분열로 설명",1],["2번","인간 적용의 가능성과 한계",1],["플랫폼 채점","AI 점수 → 교사 확정"]],
+ rubric:{total:10,items:[["체세포 분열과 재생 현상",5],["재생 능력을 인간에게 적용",5]],note:"1번 만점 조건: 세포 <b>크기가 아니라 수</b>가 늘고, 분열 전후 <b>염색체 수는 같다</b>"},
+ cond:true,
+ ai:[["기사 추천 프롬프트","“학생들이 흥미로워할 만한 신문 기사를 웹에서 찾아줘. 대상은 중학교 3학년 학생들이야.”",1],["채점기준 자동 생성","문항 이미지 + 프롬프트 → 생성 후 문항에 맞게 수정"],["AI 점수는 (괄호)로 표시","교사가 모든 답안을 직접 확인해 확정"]],
+ img:{main:["0040","지문의 출발이 된 과학 기사"],flow:["0044","재구성한 읽기 자료"],ai:["0062","AI 채점기준 생성 화면"],c0:["004B","조건 없음"],c1:["004C","조건 제시"],gal:[["0044","읽기 자료"],["0062","채점기준 생성"],["0071","AI 채점 결과"],["0072","교사 채점 상세"]]}},
+{id:"lee-ek",no:"06",subj:"기술·가정",school:"다산한강중학교",name:"이은경",grade:"중1",
+ title:"프로젝트 기반 논술형 평가",sub:"바람직한 소비 방안 제시하기",std:"[9기가02-12·13] 소비자 권리와 책임 있는 소비",
+ key:"소비자 8대 권리로 피해 사례를 읽고 해결하기",
+ pts:["판매자와 소비자 양측의 예방 방안 제시","작성 조건과 300~500자 분량 명시","하이러닝으로 강점·보완점 피드백"],
+ flow:[["8대 권리","권리와 책임 배우기"],["소비신조어","소비 트렌드 탐구"],["뉴스카드","소비자 피해 (모둠)"],["다짐 카드","나의 소비 (개별)"],["논술형 평가","300~500자",1],["환류","다음 프로젝트에 반영"]],
+ rubric:{total:30,items:[["소비자의 권리 제시",5],["권리의 개념 제시",5],["상황에 맞는 권리 분별",5],["판매자 입장 예방 방안",5],["소비자 입장 예방 방안",5],["책임 있는 소비자의 역할",5]],note:"<b>6요소 × 5점</b> · 권리 이해에서 실천 방안까지 단계적으로"},
+ ai:[["하이러닝 채점","AI가 학생별 강점과 보완점 분석"],["결과 환류","다음 프로젝트 주제와 평가 설계에 반영"]],
+ img:{main:["0083","논술형 평가 문항지"],flow:["0079","소비신조어 탐구 결과물"],ai:["007F","학생 소비 다짐 카드"],gal:[["0079","소비신조어"],["007B","피해 뉴스카드"],["007F","소비 다짐 카드"]]}},
+{id:"lee-ys",no:"07",subj:"체육",school:"회암중학교",name:"이여순",grade:"중2·3",
+ title:"체육과 서·논술형 수업과 평가",sub:"생각의 크기를 키우는 글쓰기",std:"[9체02-27] 지속가능한 스포츠 환경과 공동체 의식",
+ key:"전쟁·인권 탄압 국가의 국제 스포츠 대회 출전, 찬성인가 반대인가",
+ pts:["교사와 학생의 삶이 만나는 주제","토의로 양을, 토론으로 질을 키운 뒤 쓰기","필수 키워드 · 근거 3개 · 출처 · 줄 수까지 루브릭화"],
+ flow:[["자료탐색","생각의 시작"],["토의","생각의 양적 팽창"],["토론","생각의 질적 팽창"],["글쓰기 연습","형식이 내용을 담는다"],["논술형 평가","입장과 논거로 쓰기",1],["피드백","AI 피드백 결과 제공"]],
+ rubric:{total:20,items:[["논제 적합성 · 핵심 키워드",7],["주장 전개 · 근거의 타당성",7],["단락 구성 · 분량의 균형",6]],note:"서론·결론 <b>4~5줄</b> · 본론 단락 <b>7~9줄</b> · 근거 3개 중 1개 이상 <b>출처</b> 표기"},
+ ai:[["루브릭 기반 AI 피드백","필수어·근거·출처를 답안 문장으로 짚어 판단"],["확인 못 하는 것은 유보","원고지 줄 수 등은 교사가 원본으로 확인"]],
+ img:{main:["0092","체육과 논술형 수행평가지"],flow:["0088","논술형 수업의 구조"],ai:["0093","학생 원고지 답안"],gal:[["0088","수업 구조"],["008C","자료탐색 기록지"],["0092","수행평가지"]]}},
+{id:"jung-sm",no:"08",subj:"특수",school:"송민학교",name:"정승미",grade:"중1",
+ title:"AI 기반 성장 중심 서·논술형 평가",sub:"핵심 개념을 활용한 다양한 표현형 평가",std:"[9과학03-02] 뼈와 근육의 생김새와 기능",
+ key:"같은 개념, 다른 표현: 낱말 · 그림 · 문장 · AAC",
+ pts:["표현 방식이 아니라 핵심 개념의 이해를 평가","받은 지원(단서)의 정도로 수행 수준을 구분","AI로 응답 분석, 최종 판단은 교사"],
+ flow:[["핵심 개념","생김새 · 기능 · 바른 자세"],["학생 특성","의사소통 방식 분석"],["표현형 문항","문장 · 그림 · 신체 표현",1],["AI 분석","응답과 이해 수준 분석",1],["성장 기록","변화 비교 · 후속 지도"]],
+ rubric:{total:100,items:[["뼈의 기능",25],["근육의 기능",25],["뼈와 근육의 움직임",25],["건강한 생활 실천",25]],note:"<b>25</b> 단서 없이 완전히 · <b>15</b> 추가 단서 후 · <b>10</b> 복합 지원 후 · <b>0</b> 근거 없음<br>그림·AAC 등 <b>의사소통 방식 자체는 감점 사유가 아님</b>"},
+ ai:[["AI 분석 4단계","자료 입력 → AI 분석 → 결과 정리 → 교사 판단"],["성장 기록 프롬프트 유의점","실제 반응만 기록 · 부족함 강조하지 않기 · 지원과 독립 수행 구분"]],
+ img:{main:["009A","그림으로 답하는 문항"],flow:["009C","표현형 평가 학습지"],ai:["00A3","학생 답안"],gal:[["009C","학습지"],["009F","학생 답안"],["00A3","학생 답안"],["00A0","신체 표현 (AI 생성 이미지로 대체)"]]}},
+{id:"kwon-hs",no:"09",subj:"일반사회",school:"송양고등학교",name:"권현숙",grade:"고3",
+ title:"AI와 함께 하는 문항 개발과 피드백",sub:"사회적 소수자 차별의 구조와 해결방안",std:"[12사탐05-01~03] 사회적 소수자 차별의 원인과 해결",
+ key:"차별은 개인의 편견이 아니라 구조의 문제",
+ pts:["성별 임금 격차 · 이주노동자 두 제시문에서 공통 구조 찾기","한 사례를 골라 원인과 해결 방안을 깊이 논술","AI가 준 수치와 출처는 원문으로 반드시 확인"],
+ flow:[["뉴스 영상","차별 양상 보기"],["통계 · 기사","실태 탐구"],["개념 강의","원인과 유형"],["독서 활동","『선량한 차별주의자』"],["논술형 평가","공통 구조 → 원인 → 해결",1],["AI 피드백","채점 초안 · 경향 분석",1]],
+ rubric:{total:20,items:[["차별 문제 이해",5],["제시문 분석력",5],["타당한 해결 방안",5],["논리적 글 구성력",5]],note:"AI 활용 원칙: <b>식별 정보 삭제</b> · AI 사용 범위 <b>사전 안내</b> · 최종 판단은 <b>교사</b>"},
+ ai:[["자료 수집 · 정리","유형별 최근 기사·통계 탐색, 구조적 차별 통계 정리"],["1차 채점 · 피드백 초안","판단 근거까지 제시 → 교사가 확인하고 조정"],["답안 경향 분석","문항과 루브릭의 개선점까지 발견"]],
+ img:{main:["00BA","논술형 평가 문항"],flow:["00B5","수업 강의 자료"],ai:["00BC","학생 답안"],gal:[["00A8","통계 자료 탐구"],["00B1","차별의 형성 과정"],["00BA","평가 문항"],["00BC","학생 답안"]]}},
+{id:"kwon-mj",no:"10",subj:"영어",school:"전곡고등학교",name:"권명진",grade:"고2",
+ title:"서·논술형평가 문항 개발",sub:"영어 뉴스룸 기사 작성하기",std:"[12미영01-03·07] 미디어 정보 요약·재구성과 표현",
+ key:"Fact와 Opinion을 구분하는 영어 뉴스 기자 되기",
+ pts:["5W1H → Lead Sentence → 뉴스 기사","사실은 반드시 출처와 함께","AI로 학생별 핵심 어휘 3개 찾기"],
+ flow:[["News Outline","5W1H · 핵심 단어"],["Fact vs Opinion","출처 확인"],["News Script","기사 쓰기 · 평가",1],["Card News","카드뉴스 기획"],["Present","뉴스 발표"],["Gallery Walk","뉴스 전시"]],
+ rubric:{total:10,items:[["뉴스 기사로 재구성",4],["사실과 의견 구분 · 출처",3],["어휘와 언어 형식",3]],note:"1차시 <b>Self-Check</b> 항목 = 채점기준 → 활동하면서 기준을 익힘"},
+ ai:[["학생별 어휘 도우미","주제가 달라도 AI 코스웨어(플랭)로 핵심 표현 3개"],["어휘 프롬프트","“‘학교 급식의 음식물 쓰레기’ 영어 뉴스에 필요한 핵심 단어 3개를 뜻과 예문과 함께 추천해줘.”",1],["대본 쓰기 피드백","AI 코스웨어로 피드백 받고 고쳐 쓰기"]],
+ img:{main:["00BF","영어 뉴스룸 기사 작성 문항"],flow:["00C0","학생 기사 답안"],ai:["00C2","사실·의견 구분 피드백 답안"],gal:[["00BF","문항지"],["00C0","잘 쓴 답안"],["00C2","피드백이 필요한 답안"]]}}
+];
+
+
+
+/* ============ 렌더러 ============ */
+const PAL=["#ffe27a","#bdeedd","#cfe2ff","#e2d6ff","#ffcbb8"];
+const colOf=t=>PAL[T.indexOf(t)%5];
+const I=f=>`img/${f}.jpg`;
+const shot=a=>`<figure class="shot" data-img="${a[0]}" data-cap="${a[1]}"><div class="im"><img src="${I(a[0])}" alt="${a[1]}"></div><figcaption>${a[1]}<span class="zoom">🔍 크게 보기</span></figcaption></figure>`;
+const esc=x=>x.replace(/</g,"&lt;").replace(/&lt;(\/?b)>/g,"<$1>");
+const pts=a=>`<ol class="pts">${a.map(x=>`<li>${esc(x)}</li>`).join("")}</ol>`;
+const flowEl=f=>`<div class="flow">${f.map((s,i)=>`<div class="st ${s[2]?'on':''}"><i class="num">${String(i+1).padStart(2,"0")}</i><b>${s[0]}</b><span>${s[1]}</span></div>`).join("")}</div>`;
+const cap=x=>`<span class="cap">${x}</span>`;
+
+const TABS=[["main","한눈에"],["flow","수업·평가 흐름"],["rub","채점기준"],["ai","AI 활용"],["gal","사진 자료"]];
+function tabsFor(t){const a=TABS.slice();if(t.cond)a.splice(3,0,["cond","조건의 힘"]);return a;}
+
+function tabBody(t,k){
+  if(k==="main") return `<div class="split"><div class="col">${cap("핵심 한 줄")}<div class="key">${t.key}</div>${pts(t.pts)}<p class="std end"><b>${t.grade}</b>${t.std}</p></div>${shot(t.img.main)}</div>`;
+  if(k==="flow") return `<div class="stack">${flowEl(t.flow)}<div class="split"><div class="col">${cap("이렇게 운영했어요")}${pts(t.pts)}</div>${shot(t.img.flow)}</div></div>`;
+  if(k==="rub"){
+    const r=t.rubric,max=r.level?1:Math.max(...r.items.map(x=>x[1]));
+    const rows=r.items.map(x=>`<div class="r ${!r.level&&x[1]===max&&r.items.some(y=>y[1]!==max)?'max':''}"><div class="nm">${x[0]}</div>${r.level?`<div class="lv"><span>A</span><span>B</span><span>C</span><span>D</span><span>E</span></div>`:`<div class="tr"><div class="fl" style="width:${x[1]/max*100}%"></div></div>`}<div class="pt num">${r.level?"":x[1]}</div></div>`).join("");
+    return `<div class="split" style="grid-template-columns:minmax(0,1.25fr) minmax(0,.9fr)"><div class="col">${cap("평가요소와 배점")}<div class="rub ${r.items.length>5?"many":""}">${rows}</div></div><div class="col">${cap("한눈에 보는 채점")}<div class="total"><span class="t">${r.level?"수행 수준":"만점"}</span><span class="v num">${r.level?"A–E":r.total}<small>${r.level?"":"점"}</small></span><span class="s">${r.items.length}개 평가요소${r.level?" · 5단계":""}</span></div><div class="note">${r.note}</div></div></div>`;
+  }
+  if(k==="cond") return `<div class="vs"><div class="side"><span class="tag">조건이 없을 때</span><p>“체세포 분열로 꼬리와 뇌가 재생된다.” 세포 수는 썼지만 <b>염색체 수 변화는 빠짐</b></p>${shot(t.img.c0)}</div><div class="side"><span class="tag on">조건을 제시했을 때</span><p>세포 수 증가와 <b>염색체 수 유지</b>까지 근거로 설명</p>${shot(t.img.c1)}</div></div>`;
+  if(k==="ai") return `<div class="split"><div class="col">${cap("AI는 이렇게 썼어요")}<div class="cards">${t.ai.map((a,i)=>`<div class="card ${a[2]?'pr':''}"><span class="ic num">${a[2]?"P":i+1}</span><b>${a[0]}</b><p>${a[1]}</p>${a[2]?`<button type="button" class="copy">복사하기</button>`:""}</div>`).join("")}</div></div>${shot(t.img.ai)}</div>`;
+  if(k==="gal") return `<div class="gal">${t.img.gal.map(shot).join("")}</div>`;
+}
+const head=(badge,pill,meta,h1,pb,ps)=>`<div class="who"><div class="badge num">${badge}</div><div class="tx"><div class="row"><span class="pill">${pill}</span><span class="meta">${meta}</span></div><h1>${h1}</h1></div><div class="person"><b>${pb}</b><span>${ps}</span></div></div>`;
+const tabsEl=(list,cur,attr,nx)=>`<div class="tabs" role="tablist">${list.map(x=>`<button type="button" role="tab" aria-selected="${x[0]===cur}" class="tab ${x[0]===cur?'on':''}" ${attr}="${x[0]}">${x[1]}</button>`).join("")}<span class="sp"></span>${nx}</div>`;
+
+function casePage(t,k){
+  const nx=T[(T.indexOf(t)+1)%T.length];
+  return `<section class="page" style="--c:${colOf(t)}">${head(t.no,t.subj,t.sub,t.title,t.name,t.school+" 수석교사")}${tabsEl(tabsFor(t),k,"data-tab",`<button type="button" class="nx" data-go="${nx.id}">다음 · ${nx.subj} ${nx.name} →</button>`)}<div class="body"><div class="fit">${tabBody(t,k)}</div></div></section>`;
+}
+function homePage(){
+  return `<div class="home">
+   <div class="hero"><figure class="cover" data-img="cover" data-cap="AI 시대, 생각하는 힘을 키우는 서·논술형 평가 (수석교사 10인 공저)"><img src="img/cover.jpg" alt="책 표지: AI 시대, 생각하는 힘을 키우는 서·논술형 평가"></figure>
+    <div class="go"><button type="button" data-go="intro">서·논술형평가 이해 →</button><button type="button" class="ghost" data-go="principles">공통 원칙 8가지 →</button></div></div>
+   <div class="tiles"><h2>수석님별 사례 <small>보고 싶은 사례를 눌러 주세요</small></h2>
+    <div class="grid10">${T.map(t=>`<button type="button" class="tile" style="--c:${colOf(t)}" data-go="${t.id}"><span class="top2"><span class="n num">${t.no}</span><span class="sj">${t.subj}</span></span><span class="tp">${t.sub}</span><span class="foot"><span class="nm">${t.name}</span><span class="sc">${t.school} · ${t.grade}</span></span></button>`).join("")}</div><p class="src">내용 출처: 「AI 시대, 생각하는 힘을 키우는 서·논술형 평가」 (수석교사 10인 공저)</p></div></div>`;
+}
+
+const INTRO=[
+ ["mean","의미와 목적",()=>`<div class="split"><div class="col">${cap("논술형 평가란")}<div class="key">사고 과정을 학생 자신의 언어로 논리적으로 쓰게 하는 평가</div>${pts(["지식에 대한 심층적 이해 · 탐구 · 분석 · 판단","목적: 분석적 이해력, 비판적 사고력, 창의적 문제해결력","먼저 물어보세요: 내 교과에서 키우고 싶은 역량은?"])}</div>${shot(["0001","논술형 평가의 정의와 목적"])}</div>`],
+ ["level","사고 수준 높이기",()=>`<div class="stack" style="grid-template-rows:auto auto minmax(0,1fr)">${cap("Anderson의 신교육목표 · 생물다양성 문항 예")}<div class="key" style="font-size:1.6em">기억 · 이해에 머물던 평가를 적용 · 분석 · 평가 · 창안으로</div><div class="ladder">${[["기억","생물다양성의 의미를 쓰시오",35],["이해","중요한 이유를 설명하시오",47],["적용","학교 주변에서 높일 방법 2가지",59],["분석","두 지역 자료를 비교해 판단",71,1],["평가","공원 조성 vs 습지 복원, 근거 들어 주장",85,1],["창안","보호 프로젝트를 설계하시오",100,1]].map(x=>`<div class="${x[3]?'hi':''}" style="height:${x[2]}%"><b>${x[0]}</b><span>${x[1]}</span></div>`).join("")}</div></div>`],
+ ["form","문항 구성",()=>`<div class="stack"><div class="formula"><span>자료(보기)</span><em>+</em><span>평가 요소</span><em>+</em><span>반응 지시어</span><em>+</em><span class="on">조건</span></div><div class="split"><div class="col">${cap("문항 = 자료 + 발문 + 조건")}${pts(["‘비교하시오 · 평가하시오’ 같은 반응 지시어로 쓸 내용을 분명하게","조건은 채점 기준에 그대로 반영","제한형(문장) + 확장형(문단)을 단계형으로"])}</div>${shot(["000A","제한형 논술과 확장형 논술"])}</div></div>`],
+ ["step","설계 절차",()=>`<div class="stack">${flowEl([["성취기준 분석","NCIC › 성취수준"],["핵심 아이디어","관통하는 개념 찾기"],["평가요소 추출","성취기준에서 뽑기",1],["루브릭 작성","요소 × 3~5단계"],["문항 제작","AI 초안 → 교사 검토"],["예시 답안","상·중·하 예시글"]])}<div class="split"><div class="col">${cap("왜 성취기준부터인가")}<div class="key" style="font-size:1.55em">평가요소는 수업 활동 · 과제 · 채점 기준 · 수행 수준의 기반이 됩니다</div></div>${shot(["000F","문항 구성 요소"])}</div></div>`],
+ ["rubric","루브릭",()=>`<div class="split"><div class="col">${cap("Good → Better · 채점자가 같은 판단을 하도록")}<div class="gb"><div class="h">항목</div><div class="h">Good</div><div class="h b">Better</div>
+   <div class="k">구체성</div><div>구체적으로 작성함</div><div class="bt">5W1H로 구체적으로 작성함</div>
+   <div class="k">구조</div><div>서론-본론-결론</div><div class="bt">서론(필요성) · 본론(주장·근거) · 결론(적용)</div>
+   <div class="k">논리</div><div>논리적으로 구성</div><div class="bt">주장 → 이유 → 해결 방안의 흐름</div>
+   <div class="k">창의성</div><div>창의적인 해결 방안</div><div class="bt">원인을 분석해 해결과 연결, 여러 방법 제시</div></div></div>${shot(["0012","분석적 채점기준표 vs 총체적 채점기준표"])}</div>`],
+ ["prompt","AI 프롬프트",()=>`<div class="split"><div class="col">${cap("문항 생성 프롬프트에 담을 4가지")}${pts(["대상: 중학교 1학년","자료: 뉴스 · 논문 · 통계 등 검증된 자료","소재: 학생이 흥미로워할 특정 생물 이야기","채점기준: 점수 단계와 개인·사회·국가 차원"])}</div><div class="col">${cap("실제 프롬프트")}<div class="cards"><div class="card pr"><span class="ic num">P</span><b>바로 써 보는 프롬프트 · 문항 생성</b><p>“생물다양성 서논술형 문항을 만들려고 해. 웹에서 검증된 자료로 중학교 1학년이 흥미로워할 특정 생물 지문을 만들고, 채점기준은 ~함, ~임 형태로 만들어줘.”</p><button type="button" class="copy">복사하기</button></div><div class="card pr"><span class="ic num">P</span><b>바로 써 보는 프롬프트 · 예시 답안</b><p>“채점기준의 수행수준으로 나뉜 상·중·하 글을 서론·본론·결론이 이어진 글로 각 3개씩 만들어줘.”</p><button type="button" class="copy">복사하기</button></div></div></div></div>`]
+];
+function introPage(k){
+  return `<section class="page" style="--c:#ffe27a">${head("Ⅰ","이해","AI 서·논술형평가 이해","생각하는 힘을 키우는 평가, 어떻게 설계할까","10인 공동","본문 1쪽")}${tabsEl(INTRO,k,"data-itab",`<button type="button" class="nx" data-go="${T[0].id}">사례 보기 →</button>`)}<div class="body"><div class="fit">${INTRO.find(x=>x[0]===k)[2]()}</div></div></section>`;
+}
+const PR=[["조건이 곧 채점 기준","<조건>은 답안을 안내하고 채점의 객관성과 일관성을 높입니다","진연자 · 고윤경 · 권명진"],["논술 동사의 뜻을 밝힌다","‘비교하시오’가 무엇인지 문항에 적으면 답이 달라집니다","고윤경"],["AI는 초안, 판단은 교사","AI 점수와 피드백은 초안, 최종 판단과 책임은 교사","고윤경 · 정승미 · 권현숙"],["점수보다 피드백 먼저","점수를 감추면 학생이 피드백을 읽습니다","박미영"],["수업 속에 평가를","토의 · 토론 · 연습을 거쳐 총괄평가로","고윤경 · 이여순 · 이은경"],["지문 탐색은 AI와","흥미와 수준에 맞는 기사·통계를 찾고 교사가 재구성","진연자 · 권현숙"],["표현은 다양하게","낱말 · 그림 · 문장 · AAC로 같은 개념을","정승미 · 김미경"],["개인정보와 공정성","식별 정보 삭제, AI 사용 범위는 미리 안내","권현숙 · 정승미"]];
+const WHO={"이영옥":"lee-yo","김미경":"kim-mk","고윤경":"ko-yk","박미영":"park-my","진연자":"jin-yj","이은경":"lee-ek","이여순":"lee-ys","정승미":"jung-sm","권현숙":"kwon-hs","권명진":"kwon-mj","Ⅰ장":"intro"};
+const PRD=[
+ ["<조건>은 학생에게 무엇을 써야 하는지 알려 주고, 교사가 무엇을 볼지 미리 밝혀 두는 약속입니다. 조건과 평가요소를 하나씩 맞추면 채점이 객관적이고 일관됩니다. 다양한 관점을 보고 싶은 문항은 조건을 최소화합니다.",
+  [["진연자","세포 수 · 염색체 수 변화를 조건으로 주자 ‘재생된다’ 한 줄 답이 근거 있는 설명으로 바뀌었습니다."],["고윤경","3번 문항에 [요구-결정-집행] 흐름을 제시해 단계별로 정치 주체를 연결하게 했습니다."],["박미영","조건 5개 = 평가요소 5개 = 답안 5문단으로 맞추고 문단마다 작성 힌트를 적었습니다."],["권명진","뉴스 형식 · 사실과 의견 · 출처 · 언어 형식을 조건으로 밝혀 스스로 점검하게 했습니다."]]],
+ ["‘비교하시오’, ‘평가하시오’ 같은 반응 지시어가 정확히 무엇을 요구하는지 문항에 함께 적어 둡니다. 학생은 무엇을 어떻게 쓸지 알고, 교사는 평가하려는 핵심 수행이 분명해집니다.",
+  [["고윤경","형성평가부터 ‘설명하기: 구체적 사례로 용어를 정의하는 능력’처럼 수행의 뜻을 밝혔습니다."],["고윤경","역할만 나열한 답안을 보고, 수업에서 ‘공통점은 ~, 차이점은 ~’ 비교 틀을 미리 연습해야 함을 발견했습니다."],["Ⅰ장","반응 지시어를 바꾸면 같은 주제로도 문항의 난이도와 사고 수준을 조절할 수 있습니다."]]],
+ ["AI 점수와 피드백은 출발점입니다. AI는 수업 맥락과 학생의 성장 과정을 모르고, 흐린 손글씨를 잘못 읽거나 사실과 다른 수치를 낼 수 있습니다. 교사가 원본과 대조해 확정해야 합니다.",
+  [["고윤경","하이러닝이 요소별 점수와 피드백 초안을 내면 교사가 검토 · 수정해 확정했습니다."],["진연자","AI 점수는 (괄호)로 표시되고, 교사가 모든 답안을 직접 보며 점수를 저장했습니다."],["정승미","AI 분석에 실제 수행 과정과 의사소통 특성을 더해 교사가 최종 성취 수준을 판단했습니다."],["권현숙","이의 제기에 교사가 직접 근거를 설명할 수 있도록 AI 채점을 그대로 성적에 넣지 않습니다."]]],
+ ["점수가 보이면 학생은 점수만 보고 내용을 읽지 않습니다. AI가 약한 곳만 짚게 하고, 피드백을 읽고 고칠 점을 스스로 정리하게 하면 진짜 고쳐쓰기가 일어납니다.",
+  [["박미영","AI가 점수 없이 다섯 평가요소로 답안의 약한 곳만 짚도록 조건을 걸었습니다."],["박미영","AI 피드백 전에 예시글 네 편을 교사 모델링 → 모둠 순으로 먼저 채점하며 글을 보는 눈을 길렀습니다."],["박미영","피드백에 동의하지 않으면 그 까닭을 근거와 함께 적게 했습니다."],["김미경","키위런 피드백으로 고쳐 쓴 뒤 동료 평가를 거쳐 최종 제출했습니다."]]],
+ ["논술형 평가는 한 번의 시험이 아니라 수업 흐름 안에 놓일 때 힘을 가집니다. 자료 탐색, 토의, 토론, 쓰기 연습을 거쳐 총괄평가로 가면 사고가 단계적으로 넓어집니다.",
+  [["고윤경","10차시 형성평가 → 11~12차시 찬반토론 → 17차시 총괄평가로 이어지게 설계했습니다."],["이여순","자료탐색 → 토의(양적 팽창) → 토론(질적 팽창) → 쓰기 연습 → 평가 → 피드백으로 운영했습니다."],["이은경","8대 권리 → 소비신조어 → 피해 뉴스카드 → 다짐 카드 → 논술형 평가로 프로젝트를 이었습니다."],["박미영","1차시에 만든 우리 반의 ‘교류’ 정의를 수업 내내 다시 꺼내 흔들어 보게 했습니다."]]],
+ ["학생의 흥미와 수준에 맞는 지문 찾기는 문항 개발에서 가장 시간이 많이 드는 일입니다. AI로 기사와 통계를 찾고 고른 뒤, 교사가 평가 목적에 맞게 재구성합니다. 수치와 출처는 반드시 원문에서 확인합니다.",
+  [["진연자","‘중3이 흥미로워할 기사’ 프롬프트로 도마뱀 · 아홀로틀 재생 기사를 찾아 읽기 자료로 재구성했습니다."],["권현숙","성별 · 이주민 · 장애 유형별로 최근 기사와 통계를 찾고, 모든 수치를 원문에서 직접 확인했습니다."],["고윤경","제미나이로 정보 탐색 시간을 줄이고, 아낀 시간을 토론과 성찰 글쓰기에 썼습니다."]]],
+ ["평가하려는 것은 핵심 개념의 이해이지 표현 수단이 아닙니다. 같은 개념을 낱말 · 그림 · 문장 · AAC로 나타내게 하면 더 많은 학생의 이해와 성장을 확인할 수 있습니다.",
+  [["정승미","문장 · 그림 선택 · 신체 표현 등 응답 방식을 열어 두고, 의사소통 방식 자체는 감점하지 않았습니다."],["정승미","표현 수단이 아니라 받은 단서와 지원의 정도로 수행 수준을 구분했습니다."],["김미경","원형정리법 같은 비계로 개요 작성의 추상적 사고를 도왔습니다."],["권명진","기사 쓰기를 카드뉴스와 뉴스 발표로 넓혀 다양한 방식으로 표현하게 했습니다."]]],
+ ["학생 답안을 AI에 넣기 전 이름 · 학번 등 식별 정보를 지우고, 학교와 교육청이 허용한 도구 안에서 씁니다. 학생의 AI 사용 범위는 평가 전에 알리고, 최종 답안은 수업 시간에 직접 쓰게 합니다.",
+  [["권현숙","식별 정보 삭제, AI로 재구성한 제시문의 출처와 저작권 표기, AI 활용법의 수업 내 안내를 원칙으로 세웠습니다."],["정승미","학생의 신체 표현 사진은 AI 생성 이미지로 바꿔 사례를 공유했습니다."],["정승미","성장 기록 프롬프트에 ‘확인되지 않은 이전 결과를 지어내지 말 것’을 넣었습니다."]]]
+];
+const pm=document.getElementById("pm"),pmc=document.getElementById("pmc");let pmI=0;
+function openPm(i){pmI=i;const x=PR[i],d=PRD[i];
+  pmc.style.setProperty("--pc",PAL[i%5]);
+  pmc.innerHTML=`<div class="pmh"><span class="pmn num">${String(i+1).padStart(2,"0")}</span><div><small>현장에서 확인한 원칙 ${i+1} / 8</small><h2>${x[0]}</h2></div><button type="button" class="pmx" data-pmclose aria-label="닫기">✕</button></div>
+   <div class="pmb"><p class="pmd">${d[0].replace(/</g,"&lt;")}</p><h4>수석님 사례에서는</h4>
+   <div class="pmex">${d[1].map(e=>`<div class="ex"><span class="who2">${e[0]}</span><p>${e[1]}</p><button type="button" data-pmgo="${WHO[e[0]]}">${e[0]==="Ⅰ장"?"이해 편 보기":"사례 보러 가기"} →</button></div>`).join("")}</div></div>
+   <div class="pmf"><button type="button" data-pmi="${(i+7)%8}">◀ 이전 원칙</button><button type="button" data-pmi="${(i+1)%8}">다음 원칙 ▶</button></div>`;
+  pm.classList.add("on");pmc.focus&&pmc.focus();}
+function closePm(){pm.classList.remove("on");}
+pm.addEventListener("click",e=>{e.stopPropagation();
+  if(e.target===pm||e.target.closest("[data-pmclose]")){closePm();return;}
+  const g=e.target.closest("[data-pmgo]");if(g){closePm();go(g.dataset.pmgo);return;}
+  const n=e.target.closest("[data-pmi]");if(n){openPm(+n.dataset.pmi);}
+});
+function prinPage(){
+  return `<section class="page" style="--c:#ffcbb8">${head("★","공통 원칙","10개 사례에서 찾은","현장에서 확인한 여덟 가지 원칙","10인의 수석교사","교과를 넘어 공통으로")}<div class="tabs" style="min-height:4px"></div><div class="body"><div class="fit"><div class="prin">${PR.map((x,i)=>`<button type="button" class="c" data-pr="${i}" style="--pc:${PAL[i%5]}"><i class="num">${String(i+1).padStart(2,"0")}</i><b>${x[0]}</b><p>${x[1].replace(/</g,"&lt;")}</p><span class="more"><small>${x[2]}</small><em>자세히 보기 →</em></span></button>`).join("")}</div></div></div></section>`;
+}
+
+/* ============ 상태 · 라우팅 ============ */
+const view=document.getElementById("view");
+let route="home",tab="main",itab="mean";
+function fit(){
+  const f=view.querySelector(".fit");if(!f||innerWidth<=820)return;
+  const body=f.parentElement,pad=parseFloat(getComputedStyle(body).paddingTop)*2;
+  const set=v=>f.style.fontSize=`calc(var(--u)*${v.toFixed(2)})`;
+  const over=()=>f.scrollHeight>body.clientHeight-pad+1||[...f.querySelectorAll(".col,.cards,.rub,.stack")].some(c=>c.scrollHeight>c.clientHeight+1);
+  /* 남는 공간이 있으면 글자를 키우고, 넘치면 줄입니다 */
+  let s=1.5;set(s);
+  if(!over()){while(s<2.1){set(s+.05);if(over()){set(s);break}s+=.05}}
+  else{while(over()&&s>1.05){s-=.05;set(s)}}
+}
+function render(){
+  const t=T.find(x=>x.id===route);
+  if(t){ if(!tabsFor(t).some(x=>x[0]===tab))tab="main"; view.innerHTML=casePage(t,tab); }
+  else if(route==="intro") view.innerHTML=introPage(itab);
+  else if(route==="principles") view.innerHTML=prinPage();
+  else view.innerHTML=homePage();
+  document.querySelectorAll(".menu .hb").forEach(b=>b.classList.toggle("on",b.dataset.go===route||(b.dataset.go==="home"&&!!t)));
+  const want=route==="home"?"":route;
+  if(location.hash.slice(1)!==want){try{history.replaceState(null,"",want?"#"+want:location.pathname+location.search)}catch(e){}}
+  fit();
+  if(timer)restartProg();
+}
+function go(r){route=r;tab="main";itab="mean";render();}
+
+/* 클릭 */
+document.addEventListener("click",e=>{
+  const cp=e.target.closest(".copy");if(cp){stopAuto();const txt=cp.parentElement.querySelector("p").textContent.replace(/^“|”$/g,"");(navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>{cp.textContent="복사했어요 ✓";cp.classList.add("ok")}).catch(()=>{cp.textContent="복사가 막혔어요";});setTimeout(()=>{cp.textContent="복사하기";cp.classList.remove("ok")},2000);return;}
+  if(!document.contains(e.target)||e.target.closest("#set,#setBtn,#auto,#lb"))return;
+  const g=e.target.closest("[data-go]");if(g){stopAuto();go(g.dataset.go);return;}
+  const tb=e.target.closest("[data-tab]");if(tb){stopAuto();tab=tb.dataset.tab;render();return;}
+  const it=e.target.closest("[data-itab]");if(it){stopAuto();itab=it.dataset.itab;render();return;}
+  const prb=e.target.closest("[data-pr]");if(prb){stopAuto();openPm(+prb.dataset.pr);return;}
+  const sh=e.target.closest(".shot,.cover");if(sh){const was=!!timer;stopAuto();resumeAfterLb=was;openLb(sh.dataset.img,sh.dataset.cap);return;}
+  if(e.target.closest(".view"))stopAuto();
+  closeSet();
+});
+document.getElementById("logo").onclick=()=>{stopAuto();go("home")};
+const lb=document.getElementById("lb");
+function openLb(f,c){const im=document.getElementById("lbimg");im.src=I(f);im.alt=c;document.getElementById("lbcap").innerHTML=`${c}<span>✕ 또는 화면을 누르면 닫혀요${resumeAfterLb?" · 닫으면 자동 넘김이 이어져요":""}</span>`;lb.classList.add("on");}
+let resumeAfterLb=false;
+function closeLb(){lb.classList.remove("on");if(resumeAfterLb){resumeAfterLb=false;startAuto();}}
+lb.onclick=closeLb;
+
+function step(n){
+  const t=T.find(x=>x.id===route);
+  if(t){const tabs=tabsFor(t).map(x=>x[0]);let i=tabs.indexOf(tab)+n;
+    if(i>=tabs.length){const j=T.indexOf(t)+1;if(j<T.length){route=T[j].id;tab="main"}else{route=timer?"intro":"principles";itab="mean"}}
+    else if(i<0){const j=T.indexOf(t)-1;if(j>=0){route=T[j].id;tab=tabsFor(T[j]).slice(-1)[0][0]}else{route="intro";itab=INTRO.slice(-1)[0][0]}}
+    else tab=tabs[i];}
+  else if(route==="intro"){const ks=INTRO.map(x=>x[0]);let i=ks.indexOf(itab)+n;if(i>=ks.length){route=T[0].id;tab="main"}else if(i<0){route="home"}else itab=ks[i];}
+  else if(route==="home"){if(n>0){route="intro";itab="mean"}}
+  else if(route==="principles"){if(n>0){route=timer?"intro":"home";itab="mean"}else{route=T[T.length-1].id;tab="main"}}
+  render();
+}
+document.addEventListener("keydown",e=>{
+  if(lb.classList.contains("on")){if(e.key==="Escape")closeLb();return;}
+  if(pm.classList.contains("on")){if(e.key==="Escape")closePm();else if(e.key==="ArrowRight")openPm((pmI+1)%8);else if(e.key==="ArrowLeft")openPm((pmI+7)%8);return;}
+  if(e.key==="Escape"){closeSet();return;}
+  if(e.target.closest&&e.target.closest("#set"))return;
+  if(e.key==="ArrowRight"){stopAuto();step(1)}else if(e.key==="ArrowLeft"){stopAuto();step(-1)}else if(e.key==="Home"){stopAuto();go("home")}
+});
+
+/* ============ 부스 설정 · 저장 ============ */
+const store={get(k,d){try{const v=localStorage.getItem("sn-"+k);return v===null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem("sn-"+k,JSON.stringify(v))}catch(e){}}};
+let secs=store.get("secs",12),track=store.get("track","none"),vol=store.get("vol",40);
+const SECS=[5,8,12,15,20,30];
+const TRACKS=[["none","없음","음악 끄기"],["piano","잔잔한 피아노","부드러운 화음 연주"],["pad","앰비언트","넓게 퍼지는 배경음"],["box","오르골","맑은 종소리 멜로디"],["beat","신나는 비트","드럼과 베이스, 경쾌한 팝"],["marimba","경쾌한 마림바","통통 튀는 리듬"],["dance","댄스 파티 🔥","128BPM 강한 비트와 신스 후렴"],["funk","펑키 그루브 🔥","들썩이는 베이스와 브라스"],["file","내 음악 파일","이 기기의 음악 고르기",1]];
+const setEl=document.getElementById("set"),setBtn=document.getElementById("setBtn");
+function drawSet(){
+  document.getElementById("seg").innerHTML=SECS.map(s=>`<button type="button" class="num ${s===secs?'on':''}" data-s="${s}">${s}초</button>`).join("");
+  document.getElementById("opts").innerHTML=TRACKS.map(x=>`<button type="button" class="opt ${x[0]===track?'on':''} ${x[3]?'wide':''}" data-t="${x[0]}"><span>${x[0]===track?'●':'○'}</span><span>${x[1]}<small>${x[0]==="file"&&fileName?fileName:x[2]}</small></span></button>`).join("");
+  document.getElementById("vol").value=vol;document.getElementById("volTx").textContent=vol;
+  updAutoTx();
+}
+function openSet(){setEl.classList.add("on");setBtn.setAttribute("aria-expanded","true");drawSet();}
+function closeSet(){setEl.classList.remove("on");setBtn.setAttribute("aria-expanded","false");}
+setBtn.onclick=()=>setEl.classList.contains("on")?closeSet():openSet();
+document.getElementById("setClose").onclick=closeSet;
+document.getElementById("seg").onclick=e=>{const b=e.target.closest("[data-s]");if(!b)return;secs=+b.dataset.s;store.set("secs",secs);drawSet();if(timer){startAuto()}};
+document.getElementById("opts").onclick=e=>{const b=e.target.closest("[data-t]");if(!b)return;const t=b.dataset.t;
+  if(t==="file"){document.getElementById("file").click();return;}
+  track=t;store.set("track",t);music.play(t);drawSet();};
+let fileName="";
+document.getElementById("file").onchange=e=>{const f=e.target.files[0];if(!f)return;fileName=f.name;track="file";music.playFile(f);drawSet();};
+document.getElementById("vol").oninput=e=>{vol=+e.target.value;document.getElementById("volTx").textContent=vol;store.set("vol",vol);music.setVol(vol)};
+document.getElementById("startAll").onclick=()=>{if(track!=="none"&&!music.on)music.play(track==="file"&&!fileName?"none":track);startAuto();closeSet();};
+
+/* ============ 자동 넘김 ============ */
+let timer=null,progT=null,t0=0;const autoBtn=document.getElementById("auto"),progEl=document.getElementById("prog");
+function updAutoTx(){document.getElementById("autoTx").textContent=timer?`넘기는 중 · ${secs}초`:`자동 넘김 ${secs}초`;}
+function restartProg(){t0=performance.now();}
+function startAuto(){
+  stopAuto(true);
+  if(route==="home"||route==="principles"){route=T[0].id;tab="main";render();}
+  timer=setInterval(()=>step(1),secs*1000);restartProg();
+  autoBtn.classList.add("on");autoBtn.setAttribute("aria-pressed","true");lb.classList.remove("on");updAutoTx();
+}
+function stopAuto(silent){
+  if(timer){clearInterval(timer);timer=null}if(progT){clearInterval(progT);progT=null}
+  progEl.style.width="0";document.getElementById("app").classList.add("noprog");document.getElementById("progW").classList.remove("on");autoBtn.classList.remove("on");autoBtn.setAttribute("aria-pressed","false");updAutoTx();
+}
+autoBtn.onclick=()=>{if(timer){stopAuto();return;}if(track!=="none"&&!music.on&&track!=="file")music.play(track);startAuto();};
+
+/* ============ 배경 음악 (브라우저에서 직접 합성) ============ */
+const music=(()=>{
+  let ctx=null,master=null,wet=null,sched=null,nextT=0,beat=0,mode="none",audio=null,on=false;
+  const N=m=>440*Math.pow(2,(m-69)/12);
+  const PROG=[[60,64,67,71],[57,60,64,67],[53,57,60,64],[55,59,62,65]]; // Cmaj7 Am7 Fmaj7 G7
+  function init(){
+    if(ctx)return;ctx=new (window.AudioContext||window.webkitAudioContext)();
+    master=ctx.createGain();master.gain.value=vol/100*.5;master.connect(ctx.destination);
+    const d=ctx.createDelay(1);d.delayTime.value=.32;const fb=ctx.createGain();fb.gain.value=.38;const lp=ctx.createBiquadFilter();lp.type="lowpass";lp.frequency.value=2200;
+    wet=ctx.createGain();wet.gain.value=.35;wet.connect(d);d.connect(lp);lp.connect(fb);fb.connect(d);lp.connect(master);
+  }
+  function tone(f,t,dur,type,peak,att){
+    const o=ctx.createOscillator(),g=ctx.createGain();o.type=type;o.frequency.value=f;
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(peak,t+att);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+    o.connect(g);g.connect(master);g.connect(wet);o.start(t);o.stop(t+dur+.05);
+  }
+  function pad(fs,t,dur){
+    const f=ctx.createBiquadFilter();f.type="lowpass";f.frequency.value=900;const g=ctx.createGain();
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.06,t+2.5);g.gain.setValueAtTime(.06,t+dur-2);g.gain.linearRampToValueAtTime(0,t+dur+1);
+    f.connect(g);g.connect(master);g.connect(wet);
+    fs.forEach(fr=>[-6,6].forEach(dt=>{const o=ctx.createOscillator();o.type="sawtooth";o.frequency.value=fr;o.detune.value=dt;o.connect(f);o.start(t);o.stop(t+dur+1.2)}));
+  }
+  let noiseBuf=null;
+  function noise(){if(noiseBuf)return noiseBuf;const n=ctx.sampleRate;noiseBuf=ctx.createBuffer(1,n,n);const d=noiseBuf.getChannelData(0);for(let i=0;i<n;i++)d[i]=Math.random()*2-1;return noiseBuf;}
+  function kick(t){const o=ctx.createOscillator(),g=ctx.createGain();o.frequency.setValueAtTime(140,t);o.frequency.exponentialRampToValueAtTime(42,t+.16);g.gain.setValueAtTime(.55,t);g.gain.exponentialRampToValueAtTime(.001,t+.32);o.connect(g);g.connect(master);o.start(t);o.stop(t+.35);}
+  function hit(t,type,freq,dur,peak){const src=ctx.createBufferSource();src.buffer=noise();const f=ctx.createBiquadFilter();f.type=type;f.frequency.value=freq;const g=ctx.createGain();g.gain.setValueAtTime(peak,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);src.connect(f);f.connect(g);g.connect(master);src.start(t);src.stop(t+dur+.02);}
+  function bass(f,t,dur){const o=ctx.createOscillator(),lp=ctx.createBiquadFilter(),g=ctx.createGain();o.type="sawtooth";o.frequency.value=f;lp.type="lowpass";lp.frequency.setValueAtTime(900,t);lp.frequency.exponentialRampToValueAtTime(220,t+dur);g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(.13,t+.01);g.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(lp);lp.connect(g);g.connect(master);o.start(t);o.stop(t+dur+.02);}
+  function stab(fs,t){const lp=ctx.createBiquadFilter(),g=ctx.createGain();lp.type="lowpass";lp.frequency.value=2400;g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(.05,t+.01);g.gain.exponentialRampToValueAtTime(.001,t+.22);lp.connect(g);g.connect(master);g.connect(wet);fs.forEach(fr=>{const o=ctx.createOscillator();o.type="square";o.frequency.value=fr;o.connect(lp);o.start(t);o.stop(t+.25)});}
+  const POP=[[60,64,67],[55,59,62],[57,60,64],[53,57,60]]; // C G Am F
+  const HOOK=[76,null,79,null,81,79,76,null,74,null,76,null,72,null,null,null];
+  const PENTA=[72,74,76,79,81,84,86,88];let mel=3;
+  let pump=null;
+  function bus(){if(!pump){pump=ctx.createGain();pump.connect(master);pump.connect(wet)}return pump;}
+  function duck(t){const g=bus().gain;g.cancelScheduledValues(t);g.setValueAtTime(.25,t);g.linearRampToValueAtTime(1,t+.22);}
+  function syn(f,t,dur,type,peak,att,cut,dest,det){const o=ctx.createOscillator(),lp=ctx.createBiquadFilter(),g=ctx.createGain();o.type=type;o.frequency.value=f;if(det)o.detune.value=det;lp.type="lowpass";lp.frequency.value=cut||4000;g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(peak,t+att);g.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(lp);lp.connect(g);g.connect(dest||master);o.start(t);o.stop(t+dur+.03);}
+  function saws(fs,t,dur,peak,cut){fs.forEach(f=>[-14,-5,5,14].forEach(d=>syn(f,t,dur,"sawtooth",peak,.008,cut,bus(),d)));}
+  function bigKick(t){const o=ctx.createOscillator(),g=ctx.createGain();o.frequency.setValueAtTime(170,t);o.frequency.exponentialRampToValueAtTime(45,t+.12);g.gain.setValueAtTime(.8,t);g.gain.exponentialRampToValueAtTime(.001,t+.38);o.connect(g);g.connect(master);o.start(t);o.stop(t+.4);hit(t,"highpass",4000,.02,.15);}
+  function clap(t,v){[0,.012,.024].forEach(d=>hit(t+d,"bandpass",1400,.14,(v||.35)));}
+  const DANCE=[[57,60,64],[53,57,60],[60,64,67],[55,59,62]]; // Am F C G
+  const LEAD=[76,76,79,76,null,74,72,null,76,null,79,81,79,76,74,72];
+  const FUNK=[[62,65,69,72],[67,71,74,77]]; // Dm7 G7
+  const SLAP=[0,null,null,12,null,null,0,10,null,0,null,12,0,null,7,null];
+  function tick(){
+    while(nextT<ctx.currentTime+1.2){
+      if(mode==="piano"){const sp=.42,ch=PROG[Math.floor(beat/8)%4],pat=[0,1,2,3,2,1,2,1];
+        if(beat%8===0)tone(N(ch[0]-12),nextT,3.2,"sine",.16,.01);
+        tone(N(ch[pat[beat%8]]+(beat%8===3?12:0)),nextT,1.6,"triangle",.09,.008);nextT+=sp;}
+      else if(mode==="pad"){const ch=PROG[beat%4];pad(ch.map(m=>N(m-12)),nextT,8);tone(N(ch[0]-24),nextT,8,"sine",.08,2);nextT+=8;}
+      else if(mode==="box"){const sp=.5;if(Math.random()<.82){mel=Math.max(0,Math.min(PENTA.length-1,mel+[-2,-1,-1,1,1,2][Math.floor(Math.random()*6)]));const f=N(PENTA[mel]);tone(f,nextT,1.8,"sine",.1,.004);tone(f*2,nextT,.7,"sine",.025,.004);}
+        if(beat%8===0)tone(N(PROG[Math.floor(beat/8)%4][0]),nextT,3,"sine",.05,.02);nextT+=sp;}
+      else if(mode==="beat"){const sp=.125,st=beat%16,bar=Math.floor(beat/16),ch=POP[bar%4];
+        if(st%4===0)kick(nextT);
+        if(st===4||st===12)hit(nextT,"bandpass",1800,.18,.32);
+        if(st%2===0)hit(nextT,"highpass",7500,st%4===2?.09:.04,st%4===2?.12:.06);
+        if(st%2===0)bass(N(ch[0]-24+(st%4===2?12:0)),nextT,.22);
+        if(st===2||st===6||st===10||st===14)stab(ch.map(N),nextT);
+        if(bar%2===1&&HOOK[st]){tone(N(HOOK[st]),nextT,.35,"triangle",.07,.005)}
+        nextT+=sp;}
+      else if(mode==="marimba"){const sp=.14,st=beat%16,ch=PROG[Math.floor(beat/16)%4],pat=[0,2,1,3,2,1,3,2,0,3,1,2,3,1,2,3];
+        if([0,3,6,8,10,13].includes(st)){const f=N(ch[pat[st]]+12);tone(f,nextT,.45,"sine",.13,.003);tone(f*4,nextT,.08,"sine",.03,.002)}
+        if(st%8===0)tone(N(ch[0]-12),nextT,.6,"sine",.16,.004);
+        if(st%4===2)hit(nextT,"highpass",9000,.05,.05);
+        if(st===4||st===12)hit(nextT,"bandpass",2500,.06,.08);
+        nextT+=sp;}
+      else if(mode==="dance"){const sp=60/128/4,st=beat%16,bar=Math.floor(beat/16)%8,ch=DANCE[bar%4],t=nextT;
+        const drop=bar>=4,build=bar===3;
+        if(st%4===0&&!(build&&st>=8)){bigKick(t);duck(t)}
+        if(st===4||st===12)clap(t,build?.3:.4);
+        if(st%4===2)hit(t,"highpass",6500,drop?.16:.1,drop?.14:.09);
+        else hit(t,"highpass",9000,.03,.04);
+        if(build&&st>=8)hit(t,"bandpass",1800,.08,.06+(st-8)*.035);
+        if(st%4!==0)syn(N(ch[0]-24+(st%2?12:0)),t,.11,"sawtooth",.12,.005,700,bus());
+        if(st%4===2||(drop&&st%8===7))saws(ch.map(m=>N(m)),t,.2,.012,drop?5200:2600);
+        if(drop&&LEAD[st]){syn(N(LEAD[st]),t,.22,"square",.05,.005,3500,bus());syn(N(LEAD[st]+12),t,.18,"sawtooth",.025,.005,6000,bus(),8)}
+        nextT+=sp;}
+      else if(mode==="funk"){const sp=60/112/4,st=beat%16,bar=Math.floor(beat/16),ch=FUNK[bar%2],t=nextT,sw=st%2?sp*.18:0;
+        if([0,3,6,10].includes(st))kick(t+sw);
+        if(st===4||st===12)clap(t+sw,.3);
+        if(st===7||st===14)hit(t+sw,"bandpass",1600,.06,.08);
+        hit(t+sw,"highpass",8000,.03,st%2?.04:.07);
+        if(SLAP[st]!==null){syn(N(ch[0]-24+SLAP[st]),t+sw,.16,"sawtooth",.16,.004,1100)}
+        if([2,5,9,11,15].includes(st))ch.slice(1).forEach(m=>syn(N(m),t+sw,.09,"square",.03,.003,3000));
+        if(st===0&&bar%2===0)ch.forEach(m=>[-8,8].forEach(d=>syn(N(m+12),t,.32,"sawtooth",.035,.01,2600,master,d)));
+        if(st===14&&bar%2===1)ch.forEach(m=>[-8,8].forEach(d=>syn(N(m+12),t+sw,.18,"sawtooth",.03,.01,2600,master,d)));
+        nextT+=sp;}
+      else return;
+      beat++;
+    }
+  }
+  function stopAll(){noiseBuf=null;pump=null;
+    if(sched){clearInterval(sched);sched=null}
+    if(audio){audio.pause();audio=null}
+    if(ctx){const c=ctx,m=master;try{m.gain.setTargetAtTime(0,c.currentTime,.25)}catch(e){}setTimeout(()=>{try{c.close()}catch(e){}},1500);ctx=null;master=null;wet=null}
+    on=false;mode="none";
+  }
+  return{
+    get on(){return on},
+    play(m){stopAll();if(m==="none"||m==="file")return;init();ctx.resume&&ctx.resume();mode=m;beat=0;nextT=ctx.currentTime+.15;tick();sched=setInterval(tick,250);on=true;},
+    playFile(f){stopAll();audio=new Audio(URL.createObjectURL(f));audio.loop=true;audio.volume=vol/100;audio.play().catch(()=>{});on=true;mode="file";},
+    setVol(v){if(master&&ctx)master.gain.setTargetAtTime(v/100*.5,ctx.currentTime,.05);if(audio)audio.volume=v/100;}
+  };
+})();
+
+addEventListener("hashchange",()=>{const h=location.hash.slice(1)||"home";if(h!==route)go(h)});
+let rz;addEventListener("resize",()=>{clearTimeout(rz);rz=setTimeout(fit,80)});
+{const h=location.hash.slice(1);if(h==="intro"||h==="principles"||T.some(t=>t.id===h))route=h;}
+render();updAutoTx();
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);
+addEventListener("load",fit);
+</script>
+</body>
+</html>
